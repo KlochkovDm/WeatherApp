@@ -3,20 +3,25 @@ package com.example.weatherapp.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weatherapp.model.AppState
 import java.lang.Thread.sleep
 
-class MainViewModel (private val liveDataToObserve : MutableLiveData<Any> = MutableLiveData()):
+class MainViewModel:
     ViewModel() {
+    private val liveDataToObserve : MutableLiveData<AppState> = MutableLiveData()
 
-    fun getData(): LiveData<Any>{
-        getDataFromLocalSource()
+    private var counter : Int = 0
+
+    fun getData(): LiveData<AppState>{
         return liveDataToObserve
     }
 
-    private fun getDataFromLocalSource (){
+    fun requestData (data: String){
+        liveDataToObserve.value = AppState.Loading
         Thread {
             sleep(2000)
-            liveDataToObserve.postValue(Any())
+            counter++
+            liveDataToObserve.postValue(AppState.Success(data+counter))
         }.start()
     }
 }
