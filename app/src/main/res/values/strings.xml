@@ -11,4 +11,6 @@
     <string name="testCoordinates">lt/ln: 55.755826, 37.617299900000035</string>
     <string name="testTemperature">+15</string>
     <string name="testFeelsLike">-23</string>
+    <string name="error">Error</string>
+    <string name="reload">Reload</string>
 </resources>

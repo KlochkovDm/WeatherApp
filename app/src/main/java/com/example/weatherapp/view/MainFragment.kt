@@ -96,8 +96,8 @@ class MainFragment : Fragment() {
             }
             is AppState.Error -> {
                 binding.mainFragmentLoadingLayout.visibility = View.GONE
-                Snackbar.make(binding.mainFragmentFAB, "Error", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Reload"){
+                Snackbar.make(binding.mainFragmentFAB, R.string.error, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.reload){
                         if(isDataSetRus) viewModel.getWeatherFromLocalSourceRus()
                         else viewModel.getWeatherFromLocalSourceWorld()}
                     .show()
