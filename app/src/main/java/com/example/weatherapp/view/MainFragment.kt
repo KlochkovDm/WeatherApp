@@ -43,6 +43,21 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        adapter.setOnItemViewClickListener(object: OnItemViewClickListener {
+            override fun onItemViewClick(weather: Weather) {
+                val manager = activity?.supportFragmentManager
+                if (manager != null) {
+                    val bundle = Bundle()
+                    bundle.putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
+                    manager.beginTransaction()
+                        .add(R.id.container, DetailsFragment.newInstance(bundle))
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+            }
+        })
+
+
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener {
             changeWeatherDataSet()
@@ -66,6 +81,7 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        adapter.removeOnItemViewClickedListener()
     }
 
     private fun renderData(data: AppState) {
@@ -89,18 +105,8 @@ class MainFragment : Fragment() {
         }
     }
 
-//    private fun populateData (weatherData: Weather){
-//        with(binding){
-//            cityName.text = weatherData.city.city
-//            cityCoordinates.text = String.format(
-//                getString(R.string.city_coordinates),
-//                weatherData.city.lat.toString(),
-//                weatherData.city.lon.toString()
-//            )
-//            temperatureValue.text = weatherData.temperature.toString()
-//            feelsLikeValue.text = weatherData.feelsLike.toString()
-//        }
-//    }
-
+    interface OnItemViewClickListener{
+        fun onItemViewClick(weather: Weather)
+    }
 
 }
