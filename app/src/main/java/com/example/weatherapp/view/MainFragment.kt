@@ -43,21 +43,16 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter.setOnItemViewClickListener(object: OnItemViewClickListener {
-            override fun onItemViewClick(weather: Weather) {
-                val manager = activity?.supportFragmentManager
-                if (manager != null) {
-                    val bundle = Bundle()
-                    bundle.putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
-                    manager.beginTransaction()
-                        .add(R.id.container, DetailsFragment.newInstance(bundle))
-                        .addToBackStack("")
-                        .commitAllowingStateLoss()
-                }
+        adapter.setOnItemViewClickListener { weather ->
+            activity?.supportFragmentManager?.apply {
+                beginTransaction()
+                    .add(R.id.container, DetailsFragment.newInstance(Bundle().apply {
+                        putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
+                    }))
+                    .addToBackStack("")
+                    .commitAllowingStateLoss()
             }
-        })
-
-
+        }
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener {
             changeWeatherDataSet()
@@ -76,12 +71,6 @@ class MainFragment : Fragment() {
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
         }
         isDataSetRus = !isDataSetRus
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        adapter.removeOnItemViewClickedListener()
     }
 
     private fun renderData(data: AppState) {
@@ -104,9 +93,4 @@ class MainFragment : Fragment() {
             }
         }
     }
-
-    interface OnItemViewClickListener{
-        fun onItemViewClick(weather: Weather)
-    }
-
 }

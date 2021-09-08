@@ -12,14 +12,10 @@ class MainFragmentAdapter:
 
     private var weatherData : List<Weather> = listOf()
 
-    private var onItemViewClickListener: MainFragment.OnItemViewClickListener? = null
+    private var onItemViewClickListener: (Weather) -> Unit = {}
 
-    fun setOnItemViewClickListener(onItemClickedListener: MainFragment.OnItemViewClickListener?){
+    fun setOnItemViewClickListener(onItemClickedListener: (Weather) -> Unit){
         this.onItemViewClickListener = onItemClickedListener
-    }
-
-    fun removeOnItemViewClickedListener(){
-        this.onItemViewClickListener = null
     }
 
     fun setWeather(data: List<Weather>){
@@ -30,15 +26,12 @@ class MainFragmentAdapter:
     inner class MainViewHolder(val binding: MainRecyclerItemBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind (weather: Weather) {
-            binding.mainFragmentRecyclerItemTextView.text = weather.city.city
-            binding.root.setOnClickListener {
-                onItemViewClickListener?.onItemViewClick(weather)
-//                Toast.makeText(itemView.context,weather.city.city,Toast.LENGTH_LONG).show()
+            binding.apply{
+                mainFragmentRecyclerItemTextView.text = weather.city.city
+                root.setOnClickListener {
+                    onItemViewClickListener(weather)
+                }
             }
-//            itemView.findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text = weather.city.city
-//            itemView.setOnClickListener{
-//                Toast.makeText(itemView.context,weather.city.city,Toast.LENGTH_LONG).show()
-//            }
         }
     }
 
