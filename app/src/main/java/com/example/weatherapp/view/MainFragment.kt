@@ -2,7 +2,6 @@ package com.example.weatherapp.view
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.service.autofill.Dataset
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.lifecycle.Observer
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.MainFragmentBinding
 import com.example.weatherapp.model.AppState
-import com.example.weatherapp.model.data.Weather
 import com.example.weatherapp.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 
@@ -76,20 +74,18 @@ class MainFragment : Fragment() {
     private fun renderData(data: AppState) {
         when (data){
             is AppState.Success -> {
-                val weatherData = data.weatherData
-                binding.mainFragmentLoadingLayout.visibility = View.GONE
-                adapter.setWeather(weatherData)
+                binding.mainFragmentLoadingLayout.hide()
+                adapter.setWeather(data.weatherData)
             }
             is AppState.Loading -> {
-                binding.mainFragmentLoadingLayout.visibility = View.VISIBLE
+                binding.mainFragmentLoadingLayout.show()
             }
             is AppState.Error -> {
-                binding.mainFragmentLoadingLayout.visibility = View.GONE
-                Snackbar.make(binding.mainFragmentFAB, R.string.error, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.reload){
-                        if(isDataSetRus) viewModel.getWeatherFromLocalSourceRus()
-                        else viewModel.getWeatherFromLocalSourceWorld()}
-                    .show()
+                binding.mainFragmentLoadingLayout.hide()
+                binding.mainFragmentFAB.showSnackBar(R.string.error, R.string.reload) {
+                    if (isDataSetRus) viewModel.getWeatherFromLocalSourceRus()
+                    else viewModel.getWeatherFromLocalSourceWorld()
+                }
             }
         }
     }

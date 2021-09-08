@@ -12,9 +12,7 @@ class MainViewModel (private val repository : Repository = RepositoryImpl()):
     ViewModel() {
     private val liveDataToObserve : MutableLiveData<AppState> = MutableLiveData()
 
-    fun getData(): LiveData<AppState>{
-        return liveDataToObserve
-    }
+    fun getData(): LiveData<AppState> = liveDataToObserve
 
     fun getWeatherFromLocalSourceWorld() = getDataFromLocalSource(isRussia = false)
     fun getWeatherFromLocalSourceRus() = getDataFromLocalSource(isRussia = true)
