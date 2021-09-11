@@ -20,7 +20,7 @@ class MainViewModel (private val repository : Repository = RepositoryImpl()):
     private fun getDataFromLocalSource(isRussia :Boolean) {
         liveDataToObserve.value = AppState.Loading
         Thread {
-            sleep(1500)
+            sleep(SLEEPTIME)
             liveDataToObserve.postValue(
                 AppState.Success(if (isRussia)
                     repository.getWeatherFromLocalStorageRus()
@@ -28,5 +28,9 @@ class MainViewModel (private val repository : Repository = RepositoryImpl()):
                 )
             )
         }.start()
+    }
+
+    companion object{
+        const val SLEEPTIME: Long = 1500
     }
 }
