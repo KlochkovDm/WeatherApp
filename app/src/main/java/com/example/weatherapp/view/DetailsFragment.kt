@@ -24,7 +24,6 @@ import java.net.URL
 import java.util.stream.Collectors
 import javax.net.ssl.HttpsURLConnection
 
-private const val API_KEY = BuildConfig.WEATHER_API_KEY
 
 class DetailsFragment: Fragment() {
 
@@ -47,48 +46,20 @@ class DetailsFragment: Fragment() {
         weatherBundle = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)?: Weather()
             binding.main.hide()
             binding.loadingLayout.show()
-            loadWeather()
+            val loader = WeatherLoader(onLoadListener,weatherBundle.city.lat,weatherBundle.city.lon)
+            loader.loadWeather()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun loadWeather() {
-        try {
-            val uri = URL("https://api.weather.yandex.ru/v2/informers?lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
-            val handler = Handler(Looper.myLooper()!!)
-            Thread {
-                var urlConnection: HttpsURLConnection? = null
-                try {
-                    urlConnection = uri.openConnection() as HttpsURLConnection
-                    urlConnection.requestMethod = "GET"
-                    urlConnection.addRequestProperty("X-Yandex-API-Key", API_KEY)
-                    urlConnection.readTimeout = 10000
-
-                    val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
-                    val result = getLines(reader)
-                    val weatherDTO:WeatherDTO = Gson().fromJson(result, WeatherDTO::class.java)
-
-
-                    handler.post {
-                        displayWeather(weatherDTO)
-                    }
-                } catch (e: Exception) {
-                    Log.e("WETHER", "Fail connection", e)
-                    e.printStackTrace()
-                } finally {
-                    urlConnection?.disconnect()
-                }
-            }.start()
-        } catch (e: MalformedURLException) {
-            Log.e("WEATHER", "Fail URI", e)
-            e.printStackTrace()
+    private val onLoadListener = object: WeatherLoader.WeatherLoaderListener{
+        override fun onLoaded(weatherDTO: WeatherDTO) {
+            displayWeather(weatherDTO)
         }
-    }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun getLines(reader: BufferedReader): String {
-        return reader.lines().collect(Collectors.joining("\n"))
-    }
+        override fun onFailed(throwable: Throwable) {
+            //обработка ошибок
+        }
 
+    }
 
     private fun displayWeather(weatherDTO: WeatherDTO) {
         with(binding) {
