@@ -1,6 +1,5 @@
 package com.example.weatherapp.view
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -10,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.DetailsFragmentBinding
 import com.example.weatherapp.model.data.Weather
 import com.example.weatherapp.model.data.dto.WeatherDTO
+import com.example.weatherapp.viewmodel.DetailsViewModel
 import com.google.gson.Gson
 import okhttp3.*
 import java.io.IOException
@@ -29,6 +30,10 @@ class DetailsFragment: Fragment() {
     private var _binding: DetailsFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
+
+    private val viewModel : DetailsViewModel by lazy {
+        ViewModelProvider(this).get(DetailsViewModel::class.java)
+    }
 
 
     private fun renderData(weatherDTO: WeatherDTO) {
@@ -69,7 +74,8 @@ class DetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         weatherBundle = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)?: Weather()
-        getWeather()
+        viewModel.getLiveData().observe(viewLifecycleOwner, {renderData(it)})
+        viewModel.getWeatherFromRemoteSource("https://api.weather.yandex.ru/v2/informers?lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
     }
 
     private fun getWeather() {
