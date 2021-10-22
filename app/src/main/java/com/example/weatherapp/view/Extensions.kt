@@ -3,7 +3,7 @@ package com.example.weatherapp.view
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 
-fun View.showSnackBar(text: Int, actionText: Int, action: (View) -> Unit){
+fun View.showSnackBar(text: String, actionText: String, action: (View) -> Unit){
     Snackbar.make(this,text,Snackbar.LENGTH_INDEFINITE)
         .setAction(actionText, action)
         .show()
