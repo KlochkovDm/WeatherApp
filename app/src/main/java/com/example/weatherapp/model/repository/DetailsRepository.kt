@@ -1,7 +1,12 @@
 package com.example.weatherapp.model.repository
 
-import okhttp3.Callback
+import com.example.weatherapp.model.data.dto.WeatherDTO
+
 
 interface DetailsRepository {
-    fun getWeatherDetailsFromServer(requestLink: String,callback: Callback)
+    fun getWeatherDetailsFromServer(
+        lat: Double,
+        lon: Double,
+        callback: retrofit2.Callback<WeatherDTO>
+    )
 }

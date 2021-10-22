@@ -47,7 +47,7 @@ class DetailsFragment: Fragment() {
                 binding.main.show()
                 binding.loadingLayout.hide()
                 binding.main.showSnackBar(getString(R.string.error), getString(R.string.reload)) {
-                    viewModel.getWeatherFromRemoteSource("https://api.weather.yandex.ru/v2/informers?lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
+                    viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat,weatherBundle.city.lon)
                 }
             }
         }
@@ -84,8 +84,8 @@ class DetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         weatherBundle = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)?: Weather()
-        viewModel.getLiveData().observe(viewLifecycleOwner, {renderData(it)})
-        viewModel.getWeatherFromRemoteSource("https://api.weather.yandex.ru/v2/informers?lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
+        viewModel.detailsLiveData.observe(viewLifecycleOwner, {renderData(it)})
+        viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat,weatherBundle.city.lon)
     }
 
     companion object{
