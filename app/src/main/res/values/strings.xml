@@ -10,4 +10,5 @@
     <string name="testFeelsLike">-23</string>
     <string name="error">Error</string>
     <string name="reload">Reload</string>
+    <string name="empty_error">Empty error</string>
 </resources>
