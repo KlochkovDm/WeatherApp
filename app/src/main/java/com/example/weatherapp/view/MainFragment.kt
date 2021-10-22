@@ -11,7 +11,6 @@ import com.example.weatherapp.R
 import com.example.weatherapp.databinding.MainFragmentBinding
 import com.example.weatherapp.model.AppState
 import com.example.weatherapp.viewmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
 
 class MainFragment : Fragment() {
 
@@ -82,7 +81,7 @@ class MainFragment : Fragment() {
             }
             is AppState.Error -> {
                 binding.mainFragmentLoadingLayout.hide()
-                binding.mainFragmentFAB.showSnackBar(R.string.error, R.string.reload) {
+                binding.mainFragmentFAB.showSnackBar(getString(R.string.error), getString(R.string.reload)) {
                     if (isDataSetRus) viewModel.getWeatherFromLocalSourceRus()
                     else viewModel.getWeatherFromLocalSourceWorld()
                 }
