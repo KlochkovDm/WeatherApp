@@ -13,6 +13,8 @@ import com.example.weatherapp.databinding.DetailsFragmentBinding
 import com.example.weatherapp.model.AppState
 import com.example.weatherapp.model.data.Weather
 import com.example.weatherapp.viewmodel.DetailsViewModel
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.details_fragment.*
 import okhttp3.*
 
 private const val TEMP_INVALID = -100
@@ -68,6 +70,10 @@ class DetailsFragment: Fragment() {
                 feelsLikeValue.text = it.feelsLike.toString()
                 weatherCondition.text = it.condition
             }
+            Picasso
+                .get()
+                .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                .into(headerIcon)
         }
     }
 
