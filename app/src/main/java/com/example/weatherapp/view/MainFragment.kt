@@ -1,16 +1,21 @@
 package com.example.weatherapp.view
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.lifecycle.Observer
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.MainFragmentBinding
 import com.example.weatherapp.model.AppState
 import com.example.weatherapp.viewmodel.MainViewModel
+
+private const val IS_RUSSIAN_KEY = "LIST_OF_RUSSIAN_KEY"
+
 
 class MainFragment : Fragment() {
 
@@ -53,21 +58,43 @@ class MainFragment : Fragment() {
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener {
             changeWeatherDataSet()
+            saveListOfTowns()
         }
         val observer = Observer<AppState> {renderData(it)}
         viewModel.getData().observe(viewLifecycleOwner, observer)
-        viewModel.getWeatherFromLocalSourceRus()
+        loadListOfTowns()
+        showWeatherDataSet()
     }
 
+    private fun loadListOfTowns() {
+        requireActivity().apply {
+            isDataSetRus = getPreferences(Context.MODE_PRIVATE).getBoolean(IS_RUSSIAN_KEY, true)
+        }
+    }
+
+    private fun saveListOfTowns() {
+        activity?.let {
+            it.getPreferences(Context.MODE_PRIVATE).edit{
+                putBoolean(IS_RUSSIAN_KEY, isDataSetRus)
+                apply()
+            }
+        }
+    }
+
+
     private fun changeWeatherDataSet() {
+        isDataSetRus = !isDataSetRus
+        showWeatherDataSet()
+    }
+
+    private fun showWeatherDataSet() {
         if (isDataSetRus) {
-            viewModel.getWeatherFromLocalSourceWorld()
-            binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
-        }else{
             viewModel.getWeatherFromLocalSourceRus()
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
+        } else {
+            viewModel.getWeatherFromLocalSourceWorld()
+            binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
         }
-        isDataSetRus = !isDataSetRus
     }
 
     private fun renderData(data: AppState) {
