@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.DetailsFragmentBinding
 import com.example.weatherapp.model.AppState
+import com.example.weatherapp.model.data.City
 import com.example.weatherapp.model.data.Weather
 import com.example.weatherapp.viewmodel.DetailsViewModel
 import com.squareup.picasso.Picasso
@@ -64,6 +65,7 @@ class DetailsFragment: Fragment() {
                     city.lat.toString(),
                     city.lon.toString()
                 )
+                saveCity(city,weather)
             }
             weather.let {
                 temperatureValue.text = it.temperature.toString()
@@ -92,6 +94,17 @@ class DetailsFragment: Fragment() {
         weatherBundle = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)?: Weather()
         viewModel.detailsLiveData.observe(viewLifecycleOwner, {renderData(it)})
         viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat,weatherBundle.city.lon)
+    }
+
+    private fun saveCity(city: City, weather: Weather) {
+        viewModel.saveCityToDB(
+            Weather(
+                city,
+                weather.temperature,
+                weather.feelsLike,
+                weather.condition
+            )
+        )
     }
 
     companion object{

@@ -3,9 +3,12 @@ package com.example.weatherapp.view
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.weatherapp.ConnectivityBroadcastReceiver
+import com.example.weatherapp.R
 import com.example.weatherapp.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
@@ -31,5 +34,25 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         unregisterReceiver(connectivityReceiver)
         super.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_action, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_history -> {
+                supportFragmentManager.apply {
+                    beginTransaction()
+                        .add(R.id.container, HistoryFragment.newInstance())
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

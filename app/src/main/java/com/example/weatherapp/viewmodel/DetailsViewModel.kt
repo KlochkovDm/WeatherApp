@@ -2,13 +2,13 @@ package com.example.weatherapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weatherapp.app.App.Companion.getHistoryDao
 import com.example.weatherapp.model.AppState
+import com.example.weatherapp.model.data.Weather
 import com.example.weatherapp.model.data.convertDtoToModel
 import com.example.weatherapp.model.data.dto.FactDTO
 import com.example.weatherapp.model.data.dto.WeatherDTO
-import com.example.weatherapp.model.repository.DetailsRepository
-import com.example.weatherapp.model.repository.DetailsRepositoryImpl
-import com.example.weatherapp.model.repository.RemoteDataSource
+import com.example.weatherapp.model.repository.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,12 +20,17 @@ private const val REQUEST_ERROR = "Ошибка запроса на сервер
 
 class DetailsViewModel(
     val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
-    private val detailsRepository : DetailsRepository = DetailsRepositoryImpl(RemoteDataSource())
+    private val detailsRepository : DetailsRepository = DetailsRepositoryImpl(RemoteDataSource()),
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
 ) : ViewModel() {
 
     fun getWeatherFromRemoteSource(lat:Double, lon: Double){
         detailsLiveData.value = AppState.Loading
         detailsRepository.getWeatherDetailsFromServer(lat, lon, callback)
+    }
+
+    fun saveCityToDB(weather:Weather){
+        historyRepository.saveEntity(weather)
     }
 
     private val callback = object : Callback<WeatherDTO> {
