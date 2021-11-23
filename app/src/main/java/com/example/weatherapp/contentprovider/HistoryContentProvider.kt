@@ -35,8 +35,7 @@ class HistoryContentProvider : ContentProvider() {
         historyDao.deleteById(id)
         // Нотификация на изменение Cursor
         context?.contentResolver?.notifyChange(uri, null)
-        return 1
-    }
+        return 1    }
 
     override fun getType(uri: Uri): String? {
         when (uriMatcher.match(uri)) {
@@ -61,7 +60,6 @@ class HistoryContentProvider : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
-        // Прочитаем часть пути из ресурсов
         authorities = "geekbrains.provider"
         // Вспомогательный класс для определения типа запроса
         uriMatcher = UriMatcher(UriMatcher.NO_MATCH)
@@ -103,13 +101,13 @@ class HistoryContentProvider : ContentProvider() {
     override fun update(
         uri: Uri, values: ContentValues?, selection: String?,
         selectionArgs: Array<String>?
-        ): Int {
-            require(uriMatcher.match(uri) == URI_ID) { "Wrong URI: $uri" }
-            // Получаем доступ к данным
-            val historyDao = getHistoryDao()
-            historyDao.update(map(values))
-            context!!.contentResolver.notifyChange(uri, null)
-            return 1
+    ): Int {
+        require(uriMatcher.match(uri) == URI_ID) { "Wrong URI: $uri" }
+        // Получаем доступ к данным
+        val historyDao = getHistoryDao()
+        historyDao.update(map(values))
+        context!!.contentResolver.notifyChange(uri, null)
+        return 1
     }
 
     // Переводим ContentValues в HistoryEntity
