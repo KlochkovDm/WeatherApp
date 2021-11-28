@@ -34,6 +34,6 @@ class MainViewModel (private val repository : Repository = RepositoryImpl()):
     }
 
     companion object{
-        const val SLEEPTIME: Long = 1500
+        const val SLEEPTIME: Long = 500
     }
 }
